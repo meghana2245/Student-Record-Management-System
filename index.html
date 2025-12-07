@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <button onclick="hardReset()" class="reset-btn">⚠️ Reset All Data</button>
+
+    <div id="loginScreen">
+        <div class="login-box">
+            <h2><i class="fas fa-university"></i> SMS Portal</h2>
+            
+            <div class="role-selector">
+                <button class="role-btn active" onclick="selectRole('admin', this)">Admin</button>
+                <button class="role-btn" onclick="selectRole('staff', this)">Staff</button>
+                <button class="role-btn" onclick="selectRole('student', this)">Student</button>
+            </div>
+
+            <h4 id="loginTitle">Admin Login</h4>
+            <input type="text" id="loginUser" placeholder="Username">
+            <input type="password" id="loginPass" placeholder="Password">
+            
+            <button class="btn-add" onclick="attemptLogin()">Login</button>
+            <p id="loginError"></p>
+            
+            <div class="demo-creds">
+                <b>Default Logins:</b><br>
+                Admin: <b>admin</b> / <b>admin123</b><br>
+                Staff: <b>staff</b> / <b>staff123</b><br>
+                Student: <b>(Roll No)</b> / <b>1234</b>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboardScreen">
+        <div class="sidebar">
+            <h2 onclick="switchSection('dashboard')" style="cursor: pointer;" title="Go to Dashboard">SMS Portal</h2>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i> <span id="displayUser">User</span><br>
+                <small id="displayRole">Role</small>
+            </div>
+
+            <div id="adminNav" class="hidden nav-menu">
+                <button class="nav-item active" onclick="switchSection('dashboard')" id="nav-dashboard">
+                    <i class="fas fa-chart-pie"></i> Dashboard
+                </button>
+                <button class="nav-item" onclick="switchSection('students')" id="nav-students">
+                    <i class="fas fa-users-cog"></i> Manage Students
+                </button>
+                <button class="nav-item" onclick="switchSection('complaints')" id="nav-complaints">
+                    <i class="fas fa-envelope"></i> Complaints
+                </button>
+            </div>
+
+            <div style="flex-grow: 1;"></div> 
+
+            <button onclick="logout()" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+
+        <div class="main-content">
+            
+            <div id="analyticsSection" class="hidden">
+                <div class="stats-header">
+                    <div class="total-card">
+                        <h3>Total Students Enrolled</h3>
+                        <p id="totalCount">0</p>
+                    </div>
+                </div>
+                
+                <h3 class="section-title">Department Performance</h3>
+                <div class="branch-grid" id="branchStatsContainer"></div>
+            </div>
+
+            <div id="managementView" class="hidden control-panel">
+                <div class="view-header">
+                    <h3>Manage Students</h3>
+                    <button class="btn-back" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Back to Login Page
+                    </button>
+                </div>
+                
+                <form id="studentForm" onsubmit="handleFormSubmit(event)">
+                    <div class="grid-form">
+                        <input type="text" id="sName" placeholder="Name" required>
+                        <input type="number" id="sRoll" placeholder="Roll No" required>
+                        <input type="number" id="sMarks" placeholder="Marks (0-100)" min="0" max="100" required>
+                        <select id="sBranch">
+                            <option value="CSE">CSE</option>
+                            <option value="ECE">ECE</option>
+                            <option value="MECH">MECH</option>
+                            <option value="CIVIL">CIVIL</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit" id="submitBtn" class="btn-add">Add Student</button>
+                        <button type="button" id="cancelBtn" class="btn-cancel hidden" onclick="cancelEdit()">Cancel Edit</button>
+                    </div>
+                </form>
+
+                <div class="toolbar">
+                    <input type="text" id="searchInput" placeholder="Search by Name or Roll No..." onkeyup="renderTable()">
+                    <button onclick="sortData()" class="btn-sort">Sort by Roll No</button>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Roll No</th>
+                            <th>Branch</th>
+                            <th>Marks</th>
+                            <th>Grade</th>
+                            <th id="actionHeader">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div id="complaintsView" class="hidden control-panel">
+                <div class="view-header">
+                    <h3>Complaints Received</h3>
+                    <button class="btn-back" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Back to Login Page
+                    </button>
+                </div>
+                <ul id="complaintList"></ul>
+            </div>
+
+            <div id="studentView" class="hidden control-panel">
+                <h3>My Profile</h3>
+                <div id="studentProfileData" class="profile-data"></div>
+                <hr>
+                <h3>Submit Complaint</h3>
+                <textarea id="complaintBox" placeholder="Describe your issue..."></textarea>
+                <button onclick="submitComplaint()" class="btn-add" style="width:200px;">Send to Admin</button>
+                <br><br>
+                <button onclick="logout()" class="btn-del" style="color: red; border: 1px solid red; padding: 5px 15px; border-radius: 4px;">Logout</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
